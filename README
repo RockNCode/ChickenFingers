@@ -1,0 +1,12 @@
+- Overview.
+This is my first video game based on C only, It took me 2 days to make the 
+first version just as a practice before doing more complex stuff.
+
+- Build instructions.
+make
+
+- Run
+./ChickenFinger
+
+- How to play.
+Just press the keys correspondent to the letters that are going down.
