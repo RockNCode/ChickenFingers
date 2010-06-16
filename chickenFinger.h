@@ -10,6 +10,8 @@
 #include <unistd.h>     //STDIN_FILENO
 #include <curses.h>
 
+#define NOTFOUND 0xFF
+
 /* Structures */
 typedef struct{
     char letra;
@@ -20,13 +22,13 @@ typedef struct{
     void* phandle;
     volatile int comthrdstop;
     pthread_t commFunc;
-    letter *let1;
-    letter *let2;
+    letter *letarr[10];
     char arr[30][30];
     int points;
     int level;
     int sleep_t;
     int delta_t;
+    int max_index;
 }appPrivateSt;
 
 /*Function prototypes*/
@@ -37,3 +39,6 @@ void display(appPrivateSt *appPrvt);
 void fillArr(char arr[30][30]);
 void moveDown(appPrivateSt *appPrvt);
 char getNewLetter();
+int searchKey(appPrivateSt * appPrvt, char key);
+void addLetter(appPrivateSt * appPrvt);
+void processFoundKey(appPrivateSt * appPrvt, int index);

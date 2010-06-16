@@ -4,6 +4,8 @@ first version just as a practice before doing more complex stuff.
 
 - Build instructions.
 make
+- To rebuild
+make clean
 
 - Run
 ./ChickenFinger
