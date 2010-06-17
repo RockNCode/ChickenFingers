@@ -12,3 +12,4 @@ make clean
 
 - How to play.
 Just press the keys correspondent to the letters that are going down.
+Player looses if one letter reaches the bottom or if lives amount reaches 0.

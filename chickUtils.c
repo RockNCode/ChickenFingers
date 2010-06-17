@@ -84,7 +84,8 @@ appPrivateSt *alloc_app_resources(void){
     me->delta_t=100000;
     fillArr(me->arr);
     me->max_index=0;
-    printf("exiting alloca \n");
+    me->lives=3;
+    pthread_mutex_init(&me->mutex,NULL);
     return me;
 }
 
@@ -93,7 +94,7 @@ void display(appPrivateSt *appPrvt){
     system("clear");
     printf(" This is Menios Chicken Finger game !!!!!\n");
     printf(" ========================================= \n");
-    printf(" ========= Points %d === Level %d ========== \n", appPrvt->points, appPrvt->level);
+    printf(" == Points %d === Level %d == Lives %d ====== \n", appPrvt->points, appPrvt->level,appPrvt->lives);
     printf(" ========================================= \n");
     for(i=0;i<30;i++){
         for(j=0;j<30;j++){
@@ -131,9 +132,11 @@ void moveDown(appPrivateSt *appPrvt){
         for(j=29;j>=0;j--){
             temp=appPrvt->arr[i][j];
             if(i<29){
+                pthread_mutex_lock(&appPrvt->mutex);
                 appPrvt->arr[i+1][j]=temp;                
                 appPrvt->arr[i][j]=' ';
                 index = searchKey(appPrvt,temp);
+                pthread_mutex_unlock(&appPrvt->mutex);
                 if( NOTFOUND != index){
                     if(i>=28){
                         appPrvt->comthrdstop=1;
@@ -183,4 +186,11 @@ char getNewLetter(){
         break;
     }
     return x;
+}
+
+void freeResources(appPrivateSt * appPrvt){
+    int i=0;
+    for(i=0; i<10; i++)
+        free(appPrvt->letarr[i]);
+    pthread_mutex_destroy(&appPrvt->mutex);
 }

@@ -29,6 +29,9 @@ typedef struct{
     int sleep_t;
     int delta_t;
     int max_index;
+    int lives;
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
 }appPrivateSt;
 
 /*Function prototypes*/
@@ -42,3 +45,4 @@ char getNewLetter();
 int searchKey(appPrivateSt * appPrvt, char key);
 void addLetter(appPrivateSt * appPrvt);
 void processFoundKey(appPrivateSt * appPrvt, int index);
+void freeResources(appPrivateSt * appPrvt);

@@ -26,33 +26,22 @@ void * CommandListener(void* pThreadData){
         else
             scanf(" %c",&key);
         /*set normal stdin read type*/
+        pthread_mutex_lock(&appPrvt->mutex);
         index = searchKey(appPrvt,key);
         if(index != NOTFOUND){
             processFoundKey(appPrvt,index);
         }
-        
-        tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
-        switch (tolower(key)){
-        case 'c':
-            //clrscr();
-            //system("clear");
-            break;
-        case 'p':
-            //printf("This is thread 2 \n");
-
-            break;
-        case 'z':
-            printf("Stopping \n");
+        else{
+            appPrvt->lives--;
+        }
+        pthread_mutex_unlock(&appPrvt->mutex);
+        if(appPrvt->lives<=0){
             appPrvt->comthrdstop=1;
-            break;
-        default:
-            //printf("Command not recognized \n");
-            break;
-            };
+            continue;
+        }
+        tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
     }
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
-    printf("Exiting Command Listener \n");
-
     return (void*)error;
 }
 

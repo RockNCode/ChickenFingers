@@ -16,21 +16,10 @@ int main(){
     }
     for(error = 0; error < 4;error++){
         display(appPrvt);
-        if(error == 0){
-            printf("\033[0;3%dm YOU LOOSE !!!\n",error);
-        }
-        else if(error == 1){
-            printf("\033[0;3%dm YOU LOOSE !!!\n",error);
-        }
-        else if(error == 2){
-            printf("\033[0;3%dm YOU LOOSE !!!\n",error);
-        }
-        else if(error == 3){
-            printf("\033[0;3%dm YOU LOOSE !!!\n",error);
-        }
+        printf("\033[0;3%dm YOU LOOSE !!!\n",error);
         usleep(appPrvt->sleep_t);
-
     }
     printf("\033[0m\n");
+    freeResources(appPrvt);
     return 0;
 }
