@@ -6,8 +6,8 @@ int main(){
     appPrvt = alloc_app_resources();
     appPrvt->arr[0][2]=appPrvt->letarr[0]->letra;
     error = pthread_create (&appPrvt->commFunc, NULL, CommandListener, appPrvt);
+    error = pthread_create (&appPrvt->dispThr, NULL, DisplayThread, appPrvt);
     while(!appPrvt->comthrdstop){
-        display(appPrvt);
         usleep(appPrvt->sleep_t);
         moveDown(appPrvt);
         if(appPrvt->comthrdstop){
