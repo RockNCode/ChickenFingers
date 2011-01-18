@@ -11,13 +11,15 @@
 #include <curses.h>
 
 #define NOTFOUND 0xFF
-
+#undef DEBUG
 
 /* Structures */
 typedef struct{
     char letra;
     int row;
     int col;
+    int timeout;
+    int myTimeOut;
 }letter;
 typedef struct{
     void* phandle;
