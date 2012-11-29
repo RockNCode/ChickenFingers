@@ -1,5 +1,7 @@
 #include "chickenFinger.h"
 
+#undef DEBUG
+
 void clrscr(void)
 {
     static int init;
@@ -16,12 +18,43 @@ void clrscr(void)
 
 int searchKey(appPrivateSt * appPrvt, char key){
     int i;
-    for(i=0;i<=appPrvt->max_index;i++){
-        if(appPrvt->letarr[i]->letra==key){
-            return i;
-        }
+	int last_index = NOTFOUND;
+    for(i = appPrvt->max_index ;i >= 0; i--){
+		if(key == appPrvt->letarr[i]->letra){
+			last_index=i;
+		}
     }
-    return NOTFOUND;
+
+    return last_index;
+}
+
+void displayLetterArray(appPrivateSt *appPrvt){
+    int i=0;
+    for(i=0;i<=appPrvt->max_index;i++){
+		printf(" arr[%d]= %c ",i,appPrvt->letarr[i]->letra);
+	}
+}
+
+void deleteElement(appPrivateSt *appPrvt, int index){
+	int i=index;
+	char temp;
+	int row,col;
+	if(appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] != ' '){
+		appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] = ' ';
+	}else{
+		row = appPrvt->letarr[index]->row;
+		col = appPrvt->letarr[index]->col;
+	}
+	for(i=index;i < appPrvt->max_index;i++){
+		temp = appPrvt->letarr[i+1]->letra;
+		row = appPrvt->letarr[i+1]->row;
+		col = appPrvt->letarr[i+1]->col;
+		appPrvt->letarr[i]->letra = temp;
+		appPrvt->letarr[i]->row = row;
+		appPrvt->letarr[i]->col = col;
+		appPrvt->letarr[i+1]->letra=' ';
+	}
+    appPrvt->max_index--;
 }
 
 void addLetter(appPrivateSt * appPrvt){
@@ -34,11 +67,8 @@ void addLetter(appPrivateSt * appPrvt){
 }
 
 void processFoundKey(appPrivateSt * appPrvt, int index){
-    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] = ' ';
-    appPrvt->letarr[index]->letra = getNewLetter();
-    appPrvt->letarr[index]->row = 0;
-    appPrvt->letarr[index]->col = rand() % 10 + 2;
-    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col]= appPrvt->letarr[index]->letra;
+	deleteElement(appPrvt,index);
+	addLetter(appPrvt);
     appPrvt->points++;
     if(0==(appPrvt->points)%10){
         appPrvt->level+=1;
@@ -76,7 +106,7 @@ appPrivateSt *alloc_app_resources(void){
         me->letarr[i]=(letter*)malloc(sizeof(letter));
     me->letarr[0]->letra = getNewLetter();
     me->letarr[0]->row=0;
-    me->letarr[0]->col=0;
+    me->letarr[0]->col=2;
     me->max_index=0;
     me->points=0;
     me->level=0;
@@ -92,6 +122,11 @@ appPrivateSt *alloc_app_resources(void){
 void display(appPrivateSt *appPrvt){
     int i=0,j=0;
     system("clear");
+#ifdef DEBUG
+	displayLetterArray(appPrvt);
+	printf("\n");
+#endif
+
     printf(" This is Menios Chicken Finger game !!!!!\n");
     printf(" ========================================= \n");
     printf(" == Points %d === Level %d == Lives %d ====== \n", appPrvt->points, appPrvt->level,appPrvt->lives);
@@ -106,7 +141,7 @@ void display(appPrivateSt *appPrvt){
                 printf("%c",appPrvt->arr[i][j]);
             }
             else{
-                printf("\033[0;31m%c\033[0m",appPrvt->arr[i][j]); // prints "hello, world" in red
+                printf("\033[0;31m%c\033[0m",appPrvt->arr[i][j]);
             }
             if(i==29 && 21>j)
                 printf("=");
@@ -124,10 +159,25 @@ void fillArr(char arr[30][30]){
         }
     }
 }
+
+void updateLetters(appPrivateSt *appPrvt){
+	int i=0;
+	for(i=0;i <= appPrvt->max_index; i++){
+		appPrvt->letarr[i]->row += 1;
+		if(appPrvt->letarr[i]->row >= 28){
+			appPrvt->comthrdstop=1;
+			return;
+		}
+	}
+}
+
 void moveDown(appPrivateSt *appPrvt){
     char temp=' ';
     int index = NOTFOUND;
     int i=0,j=0;
+	pthread_mutex_lock(&appPrvt->mutex);
+	updateLetters(appPrvt);
+	pthread_mutex_unlock(&appPrvt->mutex);
     for(i=29;i>=0;i--){
         for(j=29;j>=0;j--){
             temp=appPrvt->arr[i][j];
@@ -135,16 +185,8 @@ void moveDown(appPrivateSt *appPrvt){
                 pthread_mutex_lock(&appPrvt->mutex);
                 appPrvt->arr[i+1][j]=temp;                
                 appPrvt->arr[i][j]=' ';
-                index = searchKey(appPrvt,temp);
                 pthread_mutex_unlock(&appPrvt->mutex);
-                if( NOTFOUND != index){
-                    if(i>=28){
-                        appPrvt->comthrdstop=1;
-                        return;
-                    }
-                    appPrvt->letarr[index]->row = i+1;
-                    appPrvt->letarr[index]->col = j;
-                }
+
             }
         }
     }

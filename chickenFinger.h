@@ -18,6 +18,7 @@ typedef struct{
     int row;
     int col;
 }letter;
+
 typedef struct{
     void* phandle;
     volatile int comthrdstop;
