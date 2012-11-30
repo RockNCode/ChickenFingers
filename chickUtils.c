@@ -33,29 +33,13 @@ void addLetter(appPrivateSt * appPrvt){
         appPrvt->letarr[appPrvt->max_index]->letra;
 }
 
-void removeLetter(appPrivateSt * appPrvt,int index){
-    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] = ' ';
-    int i =0;
-    for (i=index; i<= appPrvt->max_index;i++){
-        appPrvt->letarr[i]->letra =appPrvt->letarr[i+1]->letra;
-        appPrvt->letarr[i]->row =appPrvt->letarr[i+1]->row;
-        appPrvt->letarr[i]->col =appPrvt->letarr[i+1]->col;
-    }
-    appPrvt->letarr[appPrvt->max_index]->letra =' ';
-    appPrvt->letarr[appPrvt->max_index]->row = 0;
-    appPrvt->letarr[appPrvt->max_index]->col = 0;
-    appPrvt->max_index--;
-}
-
 void processFoundKey(appPrivateSt * appPrvt, int index){
-
-    /*appPrvt->letarr[index]->letra = getNewLetter();
+    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] = ' ';
+    appPrvt->letarr[index]->letra = getNewLetter();
     appPrvt->letarr[index]->row = 0;
     appPrvt->letarr[index]->col = rand() % 10 + 2;
-    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col]= appPrvt->letarr[index]->letra;*/
-    removeLetter(appPrvt,index);
+    appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col]= appPrvt->letarr[index]->letra;
     appPrvt->points++;
-    addLetter(appPrvt);
     if(0==(appPrvt->points)%10){
         appPrvt->level+=1;
         appPrvt->sleep_t-=appPrvt->delta_t;

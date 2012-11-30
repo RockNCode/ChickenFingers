@@ -12,7 +12,6 @@
 
 #define NOTFOUND 0xFF
 
-
 /* Structures */
 typedef struct{
     char letra;
@@ -23,7 +22,6 @@ typedef struct{
     void* phandle;
     volatile int comthrdstop;
     pthread_t commFunc;
-    pthread_t dispThr;
     letter *letarr[10];
     char arr[30][30];
     int points;
@@ -38,7 +36,6 @@ typedef struct{
 
 /*Function prototypes*/
 void * CommandListener(void* pThreadData);
-void * DisplayThread(void* pThreadData);
 appPrivateSt *alloc_app_resources(void);
 void clrscr(void);
 void display(appPrivateSt *appPrvt);
