@@ -6,34 +6,34 @@
 #include <pthread.h>
 #include <sys/time.h>
 #include <error.h>
-#include <termios.h>    //termios, TCSANOW, ECHO, ICANON
-#include <unistd.h>     //STDIN_FILENO
+#include <termios.h>	//termios, TCSANOW, ECHO, ICANON
+#include <unistd.h>	 //STDIN_FILENO
 #include <curses.h>
 
 #define NOTFOUND 0xFF
 
 /* Structures */
 typedef struct{
-    char letra;
-    int row;
-    int col;
+	char letra;
+	int row;
+	int col;
 }letter;
 
 typedef struct{
-    void* phandle;
-    volatile int comthrdstop;
-    pthread_t commFunc;
-    pthread_t displayFunc;
-    letter *letarr[10];
-    char arr[30][30];
-    int points;
-    int level;
-    int sleep_t;
-    int delta_t;
-    int max_index;
-    int lives;
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
+	void* phandle;
+	volatile int comthrdstop;
+	pthread_t commFunc;
+	pthread_t displayFunc;
+	letter *letarr[10];
+	char arr[30][30];
+	int points;
+	int level;
+	int sleep_t;
+	int delta_t;
+	int max_index;
+	int lives;
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
 }appPrivateSt;
 
 /*Function prototypes*/
