@@ -5,7 +5,7 @@
 void clrscr(void)
 {
     static int init;
-    //printf(" \033[2J");
+
     if (init == 0)
     {
         initscr();
@@ -39,11 +39,12 @@ void deleteElement(appPrivateSt *appPrvt, int index){
 	int i=index;
 	char temp;
 	int row,col;
-	if(appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] != ' '){
-		appPrvt->arr[appPrvt->letarr[index]->row][appPrvt->letarr[index]->col] = ' ';
+	letter * delLetter = appPrvt->letarr[index];
+	if(appPrvt->arr[delLetter->row][delLetter->col] != ' '){
+		appPrvt->arr[delLetter->row][delLetter->col] = ' ';
 	}else{
-		row = appPrvt->letarr[index]->row;
-		col = appPrvt->letarr[index]->col;
+		row = delLetter->row;
+		col = delLetter->col;
 	}
 	for(i=index;i < appPrvt->max_index;i++){
 		temp = appPrvt->letarr[i+1]->letra;
@@ -58,12 +59,15 @@ void deleteElement(appPrivateSt *appPrvt, int index){
 }
 
 void addLetter(appPrivateSt * appPrvt){
-    appPrvt->max_index++;
-    appPrvt->letarr[appPrvt->max_index]->letra = getNewLetter();
-    appPrvt->letarr[appPrvt->max_index]->row = 0;
-    appPrvt->letarr[appPrvt->max_index]->col = 3*(rand() % 10 + 2);
-    appPrvt->arr[appPrvt->letarr[appPrvt->max_index]->row][appPrvt->letarr[appPrvt->max_index]->col]=
-        appPrvt->letarr[appPrvt->max_index]->letra;
+	int max = ++appPrvt->max_index;
+	letter *newLetter = appPrvt->letarr[max];
+
+	newLetter->letra = getNewLetter();
+    newLetter->row = 0;
+    newLetter->col = 3*(rand() % 10 + 2);
+
+	appPrvt->arr[newLetter->row][newLetter->col]=
+        newLetter->letra;
 }
 
 void processFoundKey(appPrivateSt * appPrvt, int index){
@@ -129,7 +133,8 @@ void display(appPrivateSt *appPrvt){
 
     printf(" This is Menios Chicken Finger game !!!!!\n");
     printf(" ========================================= \n");
-    printf(" == Points %d === Level %d == Lives %d ====== \n", appPrvt->points, appPrvt->level,appPrvt->lives);
+    printf(" == Points %d === Level %d == Lives %d ====== \n",
+		   appPrvt->points, appPrvt->level,appPrvt->lives);
     printf(" ========================================= \n");
     for(i=0;i<30;i++){
         for(j=0;j<30;j++){
@@ -141,7 +146,8 @@ void display(appPrivateSt *appPrvt){
                 printf("%c",appPrvt->arr[i][j]);
             }
             else{
-                printf("\033[0;31m%c\033[0m",appPrvt->arr[i][j]);
+                printf("\033[0;31m%c\033[0m",
+					   appPrvt->arr[i][j]);
             }
             if(i==29 && 21>j)
                 printf("=");
