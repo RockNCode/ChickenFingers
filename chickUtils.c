@@ -24,51 +24,11 @@ int searchKey(appPrivateSt * appPrvt, char key){
     return NOTFOUND;
 }
 
-void printListKey(appPrivateSt * appPrvt){
-    int i;
-    for(i=0;i<=appPrvt->max_index;i++){
-        printf("arr[%d] = %c col = %d \n",i,
-               appPrvt->letarr[i]->letra,appPrvt->letarr[i]->col);
-    }
-}
-
-int isValidCol(appPrivateSt * appPrvt, int col){
-    int i;
-    for(i=0;i<=appPrvt->max_index;i++){
-        if(appPrvt->letarr[i]->col == col){
-            return 1;
-        }
-    }
-    return 0;
-}
-
-int isValidLetter(appPrivateSt * appPrvt, char letter){
-    int i;
-    for(i=0;i<=appPrvt->max_index;i++){
-        if(appPrvt->letarr[i]->letra == letter){
-            return 1;
-        }
-    }
-    return 0;
-}
-
 void addLetter(appPrivateSt * appPrvt){
-    int col = rand() % 25 + 2;
-    char letter = getNewLetter();
     appPrvt->max_index++;
+    appPrvt->letarr[appPrvt->max_index]->letra = getNewLetter();
     appPrvt->letarr[appPrvt->max_index]->row = 0;
-    /*prevent overlapping columns*/
-    while(isValidCol(appPrvt, col)){
-        col = rand() % 30 + 2;
-    }
-    appPrvt->letarr[appPrvt->max_index]->col=col;
-    /*prevent letter repetition, for now*/
-    while(isValidLetter(appPrvt,letter)){
-        letter = getNewLetter();
-    }
-    appPrvt->letarr[appPrvt->max_index]->letra = letter;
-
-    appPrvt->letarr[appPrvt->max_index]->myTimeOut = rand() % 3 + 1;
+    appPrvt->letarr[appPrvt->max_index]->col = 3*(rand() % 10 + 2);
     appPrvt->arr[appPrvt->letarr[appPrvt->max_index]->row][appPrvt->letarr[appPrvt->max_index]->col]=
         appPrvt->letarr[appPrvt->max_index]->letra;
 }
@@ -169,10 +129,6 @@ void display(appPrivateSt *appPrvt){
         }
         printf("\n");
     }
-#ifdef DEBUG
-    printf("Current Keys in list \n");
-    printListKey(appPrvt);
-#endif
 }
 
 void fillArr(char arr[30][30]){
@@ -193,22 +149,18 @@ void moveDown(appPrivateSt *appPrvt){
             temp=appPrvt->arr[i][j];
             if(i<29){
                 pthread_mutex_lock(&appPrvt->mutex);
+                appPrvt->arr[i+1][j]=temp;                
+                appPrvt->arr[i][j]=' ';
                 index = searchKey(appPrvt,temp);
+                pthread_mutex_unlock(&appPrvt->mutex);
                 if( NOTFOUND != index){
                     if(i>=28){
                         appPrvt->comthrdstop=1;
                         return;
                     }
-                    appPrvt->letarr[index]->timeout++;
-                    if(appPrvt->letarr[index]->timeout >= appPrvt->letarr[index]->myTimeOut){
-                        appPrvt->letarr[index]->timeout=0;
-                        appPrvt->letarr[index]->row = i+1;
-                        appPrvt->letarr[index]->col = j;
-                        appPrvt->arr[i+1][j]=temp;
-                        appPrvt->arr[i][j]=' ';
-                    }
+                    appPrvt->letarr[index]->row = i+1;
+                    appPrvt->letarr[index]->col = j;
                 }
-                pthread_mutex_unlock(&appPrvt->mutex);
             }
         }
     }
