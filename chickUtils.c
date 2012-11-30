@@ -68,7 +68,7 @@ int getColumn(appPrivateSt * appPrvt){
 	}
 	for(i=0;i<=appPrvt->max_index;i++){
 		if(temp == appPrvt->letarr[i]->col){
-			temp=maxCol+5;
+			temp=maxCol+1;
 		}
 	}
 	return temp;
