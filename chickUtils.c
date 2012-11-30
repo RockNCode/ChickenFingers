@@ -58,13 +58,29 @@ void deleteElement(appPrivateSt *appPrvt, int index){
 	appPrvt->max_index--;
 }
 
+int getColumn(appPrivateSt * appPrvt){
+	int i=0,maxCol=0;
+	int temp = 3*(rand() % 10 + 2);
+	for(i=0;i<=appPrvt->max_index;i++){
+		if(maxCol < appPrvt->letarr[i]->col){
+			maxCol = appPrvt->letarr[i]->col;
+		}
+	}
+	for(i=0;i<=appPrvt->max_index;i++){
+		if(temp == appPrvt->letarr[i]->col){
+			temp=maxCol+5;
+		}
+	}
+	return temp;
+}
+
 void addLetter(appPrivateSt * appPrvt){
 	int max = ++appPrvt->max_index;
 	letter *newLetter = appPrvt->letarr[max];
 
 	newLetter->letra = getNewLetter();
 	newLetter->row = 0;
-	newLetter->col = 3*(rand() % 10 + 2);
+	newLetter->col = getColumn(appPrvt);
 
 	appPrvt->arr[newLetter->row][newLetter->col]=
 		newLetter->letra;
@@ -131,11 +147,11 @@ void display(appPrivateSt *appPrvt){
 	printf("\n");
 #endif
 
-	printf(" This is Menios Chicken Finger game !!!!!\n");
-	printf(" ========================================= \n");
-	printf(" == Points %d === Level %d == Lives %d ====== \n",
+	printf(" Chicken Fingers !!!!!\n");
+	printf(" ================================================== \n");
+	printf(" ======== Points %d === Level %d == Lives %d ========= \n",
 		   appPrvt->points, appPrvt->level,appPrvt->lives);
-	printf(" ========================================= \n");
+	printf(" ================================================== \n");
 	for(i=0;i<30;i++){
 		for(j=0;j<30;j++){
 			if(0 == j && 29 != i)
@@ -149,7 +165,7 @@ void display(appPrivateSt *appPrvt){
 				printf("\033[0;31m%c\033[0m",
 					   appPrvt->arr[i][j]);
 			}
-			if(i==29 && 21>j)
+			if(i==29 && 25>j)
 				printf("=");
 		}
 		printf("\n");
